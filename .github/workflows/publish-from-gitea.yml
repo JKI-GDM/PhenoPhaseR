@@ -1,0 +1,54 @@
+    name: Publish snapshot from Gitea tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Gitea tag to publish (e.g., v1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (keeps workflow files)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download tag archive from Gitea
+        env:
+          TAG: ${{ inputs.tag }}
+          # Prefer API-style archive (public repo -> no token needed)
+          ARCHIVE_URL: https://gitea.julius-kuehn.de/api/v1/repos/
+          <user.name>/<repo.name>/archive/${{ inputs.tag }}.tar.gz
+        run: |
+          curl -fL "$ARCHIVE_URL" -o src.tar.gz
+          mkdir -p /tmp/src
+          tar -xzf src.tar.gz -C /tmp/src --strip-components=1
+
+      - name: Create/update release branch with snapshot and tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Switch to (or create) a separate branch that will contain only snapshots
+          git switch release 2>/dev/null || git switch --orphan release
+          git rm -rf . >/dev/null 2>&1 || true
+
+          cp -a /tmp/src/. .
+          git add -A
+          git commit -m "Release snapshot ${TAG}" || echo "No changes to commit"
+
+          # Create/update the tag on the snapshot commit
+          git tag -f "${TAG}"
+
+          # Push branch + tag
+          git push -f origin release
+          git push -f origin "${TAG}"
