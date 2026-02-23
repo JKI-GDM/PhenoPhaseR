@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Möller"
+    given-names: "Markus"
+    orcid: "https://orcid.org/0000-0002-1918-7747"
+  - family-names: "Gerstmann"
+    given-names: "Henning"
+title: "PhenoPhaseR: Reproducible processing workflow for interpolating phenological DWD observations"
+version: 1.0.0
+doi: 10.5281/zenodo.14772749
+date-released: 2026-02-17
+license: MIT
+references:
+  - type: data
+    authors:
+      - name: "Möller, Markus"
+    title: "Input data collection for the PhenoPhaseR model"
+    doi: 10.5281/zenodo.18594964
+  - type: article
+    title: "PHASE: A geostatistical model for the Kriging-based spatial prediction of crop phenology using public phenological and climatological observations"
+    authors:
+      - family-names: "Gerstmann"
+        given-names: "Henning"
+    date-released: "2016-07-29"
+    doi: "10.1016/j.compag.2016.07.032"
+    url: "http://dx.doi.org/10.1016/j.compag.2016.07.032"
