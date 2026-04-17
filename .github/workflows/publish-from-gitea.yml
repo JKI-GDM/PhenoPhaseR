@@ -24,7 +24,7 @@ jobs:
         env:
           TAG: ${{ inputs.tag }}
           # Prefer API-style archive (public repo -> no token needed)
-          ARCHIVE_URL: https://gitea.julius-kuehn.de/api/v1/repos/markus.moeller/PhenoPhaseR/archive/${{ inputs.tag }}.tar.gz
+          ARCHIVE_URL: https://gitea.julius-kuehn.de/api/v1/repos/FDM/PhenoPhaseR/archive/${{ inputs.tag }}.tar.gz
         run: |
           curl -fL "$ARCHIVE_URL" -o src.tar.gz
           mkdir -p /tmp/src
