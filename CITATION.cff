@@ -1,0 +1,111 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "PhenoPhaseR: Reproducible processing workflow for interpolating phenological DWD observations"
+abstract: >-
+  PhenoPhaseR is a reproducible R workflow for downloading, filtering,
+  modelling, and spatially interpolating phenological observations
+  provided by the German Weather Service (DWD). It implements the PHASE
+  approach (Gerstmann et al. 2016), which combines growing degree day
+  models with geostatistical interpolation to produce area-wide
+  phenological predictions across Germany at 1 km spatial resolution.
+  Since v1.2.0, two in-pipeline publish hooks package the intermediate
+  filter variant results and the final PHASE entry-date COGs as self-
+  contained RO-Crate 1.2 deposits with W3C-anchored provenance (PROV-O),
+  dataset descriptors (DCAT 3 / Dublin Core Terms), and quality metadata
+  (DQV with SKOS bridge to ISO 19157-1). As of v1.3.0, Hook B
+  aggregates the per-(phase, year) intermediate outputs into per-phase
+  multi-band Cloud-Optimised GeoTIFFs (one band per year, named by
+  year) and wide-format per-phase VAM CSVs, reducing the published
+  artefact count from ~896 to 21 files while preserving the per-year
+  ISO 19157-1 quality elements through DQV temporal tagging.
+authors:
+  - family-names: "Möller"
+    given-names: "Markus"
+    orcid: "https://orcid.org/0000-0002-1918-7747"
+    affiliation: "Julius Kühn Institute (JKI)"
+  - family-names: "Gerstmann"
+    given-names: "Henning"
+    affiliation: "Federal Agency for Nature Conservation (BfN)"
+version: 1.3.0
+date-released: 2026-05-13
+doi: 10.5281/zenodo.18743008
+license: MIT
+repository-code: "https://github.com/JKI-GDM/PhenoPhaseR"
+url: "https://doi.org/10.5281/zenodo.18743008"
+keywords:
+  - phenology
+  - DWD
+  - winter wheat
+  - growing degree days
+  - kriging
+  - Bayesian additive model
+  - spatial interpolation
+  - Cloud Optimized GeoTIFF
+  - multi-band time series
+  - RO-Crate
+  - DCAT
+  - DQV
+  - PROV-O
+  - ISO 19157-1
+  - DFFP
+  - FAIR
+  - FAIR4RS
+  - Germany
+  - reproducible research
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.18743008
+    description: "Concept DOI (always-latest)"
+  - type: url
+    value: "https://github.com/JKI-GDM/PhenoPhaseR"
+    description: "Source code repository"
+references:
+  - type: data
+    title: "Input data collection for the PhenoPhaseR model"
+    authors:
+      - family-names: "Möller"
+        given-names: "Markus"
+        orcid: "https://orcid.org/0000-0002-1918-7747"
+    doi: "10.5281/zenodo.18594964"
+    scope: "Required input data: DWD phenology, gridded temperature, DEM"
+  - type: data
+    title: "PhenoPhaseR filter variant results (intermediate)"
+    authors:
+      - family-names: "Möller"
+        given-names: "Markus"
+        orcid: "https://orcid.org/0000-0002-1918-7747"
+      - family-names: "Gerstmann"
+        given-names: "Henning"
+    doi: "10.5281/zenodo.19483111"
+    scope: "Hook A output: filtered phenological entry-date observations"
+  - type: data
+    title: "PHASE Crop Phenological Development Dataset"
+    authors:
+      - family-names: "Möller"
+        given-names: "Markus"
+        orcid: "https://orcid.org/0000-0002-1918-7747"
+      - family-names: "Gerstmann"
+        given-names: "Henning"
+    doi: "10.5281/zenodo.19571847"
+    scope: "Hook B output: 1 km Germany-wide DOY + BSE Cloud-Optimized GeoTIFFs"
+  - type: article
+    title: "PHASE: A geostatistical model for the Kriging-based spatial prediction of crop phenology using public phenological and climatological observations"
+    authors:
+      - family-names: "Gerstmann"
+        given-names: "Henning"
+      - family-names: "Doktor"
+        given-names: "Daniel"
+      - family-names: "Gläßer"
+        given-names: "Cornelia"
+      - family-names: "Möller"
+        given-names: "Markus"
+        orcid: "https://orcid.org/0000-0002-1918-7747"
+    journal: "Computers and Electronics in Agriculture"
+    volume: 127
+    start: 726
+    end: 738
+    year: 2016
+    doi: "10.1016/j.compag.2016.07.032"
+    url: "https://doi.org/10.1016/j.compag.2016.07.032"
+    scope: "Underlying PHASE methodology"
