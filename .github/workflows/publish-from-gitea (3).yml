@@ -1,0 +1,73 @@
+name: Publish snapshot from Gitea tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Gitea tag to publish (e.g., v1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (keeps workflow files)
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Download tag archive from Gitea
+        env:
+          TAG: ${{ inputs.tag }}
+          # Prefer API-style archive (public repo -> no token needed)
+          ARCHIVE_URL: https://gitea.julius-kuehn.de/api/v1/repos/FDM/PhenoPhaseR/archive/${{ inputs.tag }}.tar.gz
+        run: |
+          curl -fL "$ARCHIVE_URL" -o src.tar.gz
+          mkdir -p /tmp/src
+          tar -xzf src.tar.gz -C /tmp/src --strip-components=1
+
+      - name: Create/update release branch with snapshot and tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Refuse to overwrite an existing tag on GitHub — protects deposits
+          # already on Zenodo from being silently replaced. To force a re-run
+          # under the same tag, delete it on GitHub first (UI → tags, or
+          # `git push --delete origin <tag>`).
+          if git ls-remote --tags origin | grep -q "refs/tags/${TAG}$"; then
+            echo "::error::Tag '${TAG}' already exists on origin. Refusing to overwrite."
+            echo "Delete it explicitly if you really want to re-publish: git push --delete origin ${TAG}"
+            exit 1
+          fi
+
+          # Switch to (or create) a separate branch that will contain only snapshots
+          git switch release 2>/dev/null || git switch --orphan release
+
+          # Wipe the working tree, but let real errors surface. `git rm -rf .`
+          # exits non-zero on an empty tree; tolerate that one specific case
+          # by checking whether anything is tracked first.
+          if [ -n "$(git ls-files)" ]; then
+            git rm -rf .
+          fi
+
+          cp -a /tmp/src/. .
+          git add -A
+          git commit -m "Release snapshot ${TAG}" || echo "No changes to commit"
+
+          # Create the tag on the snapshot commit (non-forced — we already
+          # checked it doesn't exist on origin above).
+          git tag "${TAG}"
+
+          # Push branch + tag. The branch is force-pushed by design (orphan-
+          # snapshot pattern); the tag is a regular push since it's new.
+          git push -f origin release
+          git push    origin "${TAG}"
