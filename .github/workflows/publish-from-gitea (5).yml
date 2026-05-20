@@ -1,0 +1,117 @@
+name: Publish snapshot from Gitea tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Gitea tag to publish (e.g., v1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (keeps workflow files)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download tag archive from Gitea
+        env:
+          TAG: ${{ inputs.tag }}
+          # If the Gitea repo is not anonymously readable, set a repo secret
+          # named GITEA_TOKEN (Gitea → user settings → Applications →
+          # "Generate New Token", scope read:repository is sufficient).
+          # The step works without it for fully public repos.
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          URL="https://gitea.julius-kuehn.de/api/v1/repos/FDM/PhenoPhaseR/archive/${TAG}.tar.gz"
+          echo "Fetching: $URL"
+
+          AUTH=()
+          if [ -n "${GITEA_TOKEN:-}" ]; then
+            AUTH=(-H "Authorization: token ${GITEA_TOKEN}")
+            echo "Using GITEA_TOKEN for authentication."
+          else
+            echo "No GITEA_TOKEN set — attempting anonymous download."
+          fi
+
+          # --fail-with-body keeps the response body on error so we can read
+          # Gitea's actual message instead of just getting curl exit 22.
+          HTTP_CODE=$(curl -sSL --fail-with-body \
+                            -o src.tar.gz \
+                            -w "%{http_code}" \
+                            "${AUTH[@]}" "$URL") || {
+            echo "::error::Gitea returned HTTP ${HTTP_CODE:-?} for tag '${TAG}'."
+            echo "----- response body -----"
+            cat src.tar.gz || true
+            echo
+            echo "----- end of body -----"
+            echo "Common causes:"
+            echo "  * HTTP 404 anonymously  -> repo or tag is not publicly visible;"
+            echo "                             add a GITEA_TOKEN secret."
+            echo "  * HTTP 404 with token   -> tag name does not exist on Gitea;"
+            echo "                             check https://gitea.julius-kuehn.de/FDM/PhenoPhaseR/tags"
+            echo "  * HTTP 401/403          -> token lacks read:repository scope."
+            exit 1
+          }
+
+          echo "HTTP ${HTTP_CODE}, size: $(stat -c%s src.tar.gz) bytes"
+          # Sanity-check that we actually got a gzip tar and not an HTML
+          # login page disguised as a 200 response (some SSO setups do this).
+          if ! file src.tar.gz | grep -q 'gzip compressed'; then
+            echo "::error::Downloaded file is not a gzip archive. First bytes:"
+            head -c 400 src.tar.gz || true
+            exit 1
+          fi
+
+          mkdir -p /tmp/src
+          tar -xzf src.tar.gz -C /tmp/src --strip-components=1
+
+      - name: Create/update release branch with snapshot and tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Refuse to overwrite an existing tag on GitHub — protects deposits
+          # already on Zenodo from being silently replaced. To force a re-run
+          # under the same tag, delete it on GitHub first (UI → tags, or
+          # `git push --delete origin <tag>`).
+          if git ls-remote --tags origin | grep -q "refs/tags/${TAG}$"; then
+            echo "::error::Tag '${TAG}' already exists on origin. Refusing to overwrite."
+            echo "Delete it explicitly if you really want to re-publish: git push --delete origin ${TAG}"
+            exit 1
+          fi
+
+          # Switch to (or create) a separate branch that will contain only snapshots
+          git switch release 2>/dev/null || git switch --orphan release
+
+          # Wipe the working tree, but let real errors surface. `git rm -rf .`
+          # exits non-zero on an empty tree; tolerate that one specific case
+          # by checking whether anything is tracked first.
+          if [ -n "$(git ls-files)" ]; then
+            git rm -rf .
+          fi
+
+          cp -a /tmp/src/. .
+          git add -A
+          git commit -m "Release snapshot ${TAG}" || echo "No changes to commit"
+
+          # Create the tag on the snapshot commit (non-forced — we already
+          # checked it doesn't exist on origin above).
+          git tag "${TAG}"
+
+          # Push branch + tag. The branch is force-pushed by design (orphan-
+          # snapshot pattern); the tag is a regular push since it's new.
+          git push -f origin release
+          git push    origin "${TAG}"
