@@ -16,17 +16,61 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main (keeps workflow files)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: main
 
       - name: Download tag archive from Gitea
         env:
           TAG: ${{ inputs.tag }}
-          # Prefer API-style archive (public repo -> no token needed)
-          ARCHIVE_URL: https://gitea.julius-kuehn.de/api/v1/repos/FDM/PhenoPhaseR/archive/${{ inputs.tag }}.tar.gz
+          # If the Gitea repo is not anonymously readable, set a repo secret
+          # named GITEA_TOKEN (Gitea → user settings → Applications →
+          # "Generate New Token", scope read:repository is sufficient).
+          # The step works without it for fully public repos.
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
         run: |
-          curl -fL "$ARCHIVE_URL" -o src.tar.gz
+          set -euo pipefail
+
+          URL="https://gitea.julius-kuehn.de/api/v1/repos/FDM/PhenoPhaseR/archive/${TAG}.tar.gz"
+          echo "Fetching: $URL"
+
+          AUTH=()
+          if [ -n "${GITEA_TOKEN:-}" ]; then
+            AUTH=(-H "Authorization: token ${GITEA_TOKEN}")
+            echo "Using GITEA_TOKEN for authentication."
+          else
+            echo "No GITEA_TOKEN set — attempting anonymous download."
+          fi
+
+          # --fail-with-body keeps the response body on error so we can read
+          # Gitea's actual message instead of just getting curl exit 22.
+          HTTP_CODE=$(curl -sSL --fail-with-body \
+                            -o src.tar.gz \
+                            -w "%{http_code}" \
+                            "${AUTH[@]}" "$URL") || {
+            echo "::error::Gitea returned HTTP ${HTTP_CODE:-?} for tag '${TAG}'."
+            echo "----- response body -----"
+            cat src.tar.gz || true
+            echo
+            echo "----- end of body -----"
+            echo "Common causes:"
+            echo "  * HTTP 404 anonymously  -> repo or tag is not publicly visible;"
+            echo "                             add a GITEA_TOKEN secret."
+            echo "  * HTTP 404 with token   -> tag name does not exist on Gitea;"
+            echo "                             check https://gitea.julius-kuehn.de/FDM/PhenoPhaseR/tags"
+            echo "  * HTTP 401/403          -> token lacks read:repository scope."
+            exit 1
+          }
+
+          echo "HTTP ${HTTP_CODE}, size: $(stat -c%s src.tar.gz) bytes"
+          # Sanity-check that we actually got a gzip tar and not an HTML
+          # login page disguised as a 200 response (some SSO setups do this).
+          if ! file src.tar.gz | grep -q 'gzip compressed'; then
+            echo "::error::Downloaded file is not a gzip archive. First bytes:"
+            head -c 400 src.tar.gz || true
+            exit 1
+          fi
+
           mkdir -p /tmp/src
           tar -xzf src.tar.gz -C /tmp/src --strip-components=1
 
