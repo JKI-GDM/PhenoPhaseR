@@ -1,0 +1,34 @@
+fix(v1.7.1): deposit keyword corrections
+
+Patch release. No code, API, or numerical changes — only the free-text
+keywords / dcat:keyword emitted on the root dataset of future deposits.
+
+build_keywords() in _crop_specs.R:
+
+- PHASE deposits gain validated-uncertainty terms (uncertainty quantification,
+  predictive uncertainty, prediction interval, cross-validation, calibration)
+  and method terms (generalized additive model, GAM, COG, spatial data),
+  matching the k-fold-calibrated uncertainty layer shipped in 1.7.0.
+- Filter-variant deposits gain intermediate-product terms (station filtering,
+  outlier detection, data curation) but deliberately NO uncertainty/COG terms
+  they do not contain.
+- Removed the inaccurate "BBCH" keyword from PHASE deposits: DWD phenological
+  phase codes are crop-specific catalogue codes, not BBCH numbers.
+- The hard-coded "1993-2024" temporal keyword is replaced by a range derived
+  from the actual covered years (min(years)-max(years)); both builders now
+  pass the real range via the new `temporal` argument to build_keywords().
+
+Files changed:
+  function/_crop_specs.R                    ~ build_keywords(): corrected and
+                                              artefact-honest keyword sets,
+                                              new `temporal` argument
+  function/build_filtervariant_ro_crate.R   ~ pass real year range to keywords
+  function/build_phase_cog_ro_crate.R       ~ pass real year range to keywords
+  PhenoPhaseR.R                             ~ v1.7.1 banner
+  CHANGELOG.md                              + v1.7.1 entry
+  CITATION.cff                              ~ version 1.7.1, date 2026-06-14
+  README.md                                 + What's new in v1.7.1
+
+Already-published 1.7.0 deposits retain their original keyword sets as
+historical record; the corrected keywords apply to future builds and to the
+existing records when re-published in the coordinated ESSD release.

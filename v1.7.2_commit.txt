@@ -1,0 +1,23 @@
+feat(v1.7.2): add sugar beet (DWD Plant ID 253) — completes eight-crop family
+
+Patch release. No API or behavioural change: the workflow already processed
+any crop present in .CROP_SPECS; this adds the missing table entry and its
+verified vocabulary anchor.
+
+function/_crop_specs.R:
+- Add "253" = sugar beet (Beta vulgaris, "Zucker-Ruebe"), modelled phases
+  10 (sowing), 12 (emergence), 13 (canopy closure), 24 (harvest).
+- AGROVOC anchor c_7499 ("sugar beet"), maintainer-verified against
+  agrovoc.fao.org; confirmed at build time by verify_agrovoc_uris().
+- Wikidata Q23800 carried but flagged unverified (as for all crops).
+
+The family now covers all eight target crops: 202 winter wheat, 203 winter
+rye, 204 winter barley, 205 winter rapeseed, 207 spring barley, 208 oats,
+215 maize, 253 sugar beet.
+
+Files changed:
+  function/_crop_specs.R   + "253" crop block
+  PhenoPhaseR.R            ~ v1.7.2 banner
+  CHANGELOG.md             + v1.7.2 entry
+  CITATION.cff             ~ version 1.7.2
+  README.md                + What's new in v1.7.2

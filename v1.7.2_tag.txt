@@ -1,0 +1,10 @@
+v1.7.2 — Add sugar beet (DWD Plant ID 253)
+
+Patch release completing the eight-crop family. Adds sugar beet
+(Beta vulgaris, phases 10/12/13/24) to .CROP_SPECS, anchored to AGROVOC
+sugar beet (c_7499, maintainer-verified, build-checked by
+verify_agrovoc_uris()). No API or behavioural change.
+
+Family now covers: winter wheat (202), winter rye (203), winter barley (204),
+winter rapeseed (205), spring barley (207), oats (208), maize (215),
+sugar beet (253).
