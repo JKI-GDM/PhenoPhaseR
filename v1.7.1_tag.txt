@@ -1,0 +1,18 @@
+v1.7.1 — Deposit keyword corrections
+
+Patch release. No code, API, or numerical changes; only the free-text
+keywords emitted on future deposits.
+
+- PHASE deposits gain validated-uncertainty and method keywords (uncertainty
+  quantification, predictive uncertainty, prediction interval,
+  cross-validation, calibration, GAM, COG, spatial data) matching the
+  k-fold-calibrated uncertainty layer from 1.7.0; filter-variant deposits gain
+  intermediate-product terms (station filtering, outlier detection, data
+  curation) but no uncertainty/COG terms they do not contain.
+- Removed the inaccurate "BBCH" keyword (DWD phase codes are crop-specific
+  catalogue codes, not BBCH numbers).
+- The temporal keyword is now derived from each deposit's actual year range
+  rather than a hard-coded span.
+
+Already-published 1.7.0 deposits keep their original keywords as historical
+record; corrected keywords apply to future builds.
