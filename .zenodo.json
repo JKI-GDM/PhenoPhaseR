@@ -1,0 +1,95 @@
+{
+  "title": "PhenoPhaseR: Reproducible processing workflow for interpolating phenological DWD observations",
+  "version": "v1.8.1",
+  "upload_type": "software",
+  "language": "eng",
+  "license": "MIT",
+  "description": "<p><strong>PhenoPhaseR</strong> is a reproducible R workflow for downloading, filtering, modelling, and spatially interpolating phenological observations provided by the German Weather Service (DWD). It implements the PHASE approach (Gerstmann et al. 2016), combining growing-degree-day models with geostatistical interpolation to produce area-wide phenological predictions across Germany at 1&nbsp;km spatial resolution.</p><p><strong>v1.8.0 &mdash; honest anchoring of spatially explicit uncertainty.</strong> A metadata/vocabulary release with no numerical changes to any raster or to the VAM/CAL/GEM/PIC tables. The spatial-uncertainty quality dimensions are migrated from the <code>dffp:</code> namespace to a provisional <code>fairagrodq:</code> namespace (<code>https://w3id.org/fairagro/dq#</code>, pending registration) and now declare <code>dct:isDefinedBy</code> S&auml;urich et al. (2026) rather than asserting conformance to ISO&nbsp;19157-1, which does not contain a Spatial-Uncertainty element. A new orthogonal expression-principle axis (<code>fairagrodq:UncertaintyExpressionPrinciple</code>, a SKOS scheme of eight principle concepts reached via <code>fairagrodq:expressedBy</code>) records how each uncertainty was produced and what it may claim, so a consumer can distinguish model-asserted from empirically-validated uncertainty. Genuine ISO&nbsp;19157-1 accuracy elements remain the anchor for accuracy metrics; <code>dffp:</code> is retained solely for the Application-Matrix fitness-for-purpose review. Already-published crates keep their original IRIs as historical record.</p>",
+  "creators": [
+    {
+      "name": "Möller, Markus",
+      "orcid": "0000-0002-1918-7747",
+      "affiliation": "Julius Kühn-Institut (JKI) – Federal Research Centre for Cultivated Plants"
+    },
+    {
+      "name": "Gerstmann, Henning",
+      "affiliation": "Federal Agency for Nature Conservation (BfN)"
+    }
+  ],
+  "keywords": [
+    "phenology",
+    "DWD",
+    "winter wheat",
+    "winter rye",
+    "winter barley",
+    "winter rapeseed",
+    "spring barley",
+    "oats",
+    "maize",
+    "growing degree days",
+    "kriging",
+    "Bayesian additive model",
+    "spatial interpolation",
+    "Cloud Optimized GeoTIFF",
+    "multi-band time series",
+    "RO-Crate",
+    "DCAT",
+    "DQV",
+    "PROV-O",
+    "SKOS",
+    "ISO 19157-1",
+    "AGROVOC",
+    "DFFP",
+    "FAIR",
+    "FAIR4RS",
+    "Germany",
+    "reproducible research"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isDerivedFrom",
+      "identifier": "10.5281/zenodo.18594963",
+      "resource_type": "dataset"
+    },
+    {
+      "relation": "isDescribedBy",
+      "identifier": "10.1016/j.compag.2016.07.032",
+      "resource_type": "publication-article"
+    },
+    {
+      "relation": "isSourceOf",
+      "identifier": "10.5281/zenodo.19571847",
+      "resource_type": "dataset"
+    },
+    {
+      "relation": "isSourceOf",
+      "identifier": "10.5281/zenodo.19483111",
+      "resource_type": "dataset"
+    },
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/JKI-GDM/PhenoPhaseR/tree/v1.8.1",
+      "resource_type": "software"
+    },
+    {
+      "relation": "references",
+      "identifier": "10.1016/j.ecoinf.2026.103660",
+      "resource_type": "publication-article"
+    },
+    {
+      "relation": "references",
+      "identifier": "10.1111/2041-210X.13650",
+      "resource_type": "publication-article"
+    }
+  ],
+  "grants": [
+    {
+      "id": "501100001659::501899475"
+    }
+  ],
+  "communities": [
+    {
+      "identifier": "jki"
+    }
+  ]
+}

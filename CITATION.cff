@@ -1,0 +1,81 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "PhenoPhaseR: Reproducible processing workflow for interpolating phenological DWD observations"
+abstract: >-
+  PhenoPhaseR is a reproducible R workflow for downloading, filtering, modelling,
+  and spatially interpolating phenological observations provided by the German
+  Weather Service (DWD). It implements the PHASE approach (Gerstmann et al. 2016),
+  combining growing-degree-day models with geostatistical interpolation to produce
+  area-wide phenological predictions across Germany at 1 km spatial resolution, and
+  publishes its outputs as FAIR Digital Objects (RO-Crate 1.2) with PROV-O
+  provenance, DCAT/Dublin Core descriptors, and honestly anchored DQV data-quality
+  metadata.
+type: software
+version: 1.9.0
+date-released: "2026-07-15"
+license: MIT
+repository-code: "https://github.com/JKI-GDM/PhenoPhaseR"
+url: "https://doi.org/10.5281/zenodo.18743008"
+authors:
+  - family-names: "Möller"
+    given-names: "Markus"
+    orcid: "https://orcid.org/0000-0002-1918-7747"
+    affiliation: "Julius Kühn-Institut (JKI) – Federal Research Centre for Cultivated Plants"
+  - family-names: "Gerstmann"
+    given-names: "Henning"
+    affiliation: "Federal Agency for Nature Conservation (BfN)"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.18743008"
+    description: "Concept DOI (resolves to all versions)"
+keywords:
+  - phenology
+  - DWD
+  - winter wheat
+  - winter rye
+  - winter barley
+  - winter rapeseed
+  - spring barley
+  - oats
+  - maize
+  - growing degree days
+  - kriging
+  - Bayesian additive model
+  - spatial interpolation
+  - Cloud Optimized GeoTIFF
+  - multi-band time series
+  - RO-Crate
+  - DCAT
+  - DQV
+  - PROV-O
+  - SKOS
+  - ISO 19157-1
+  - AGROVOC
+  - DFFP
+  - FAIR
+  - FAIR4RS
+  - Germany
+  - reproducible research
+references:
+  - type: article
+    title: "A phenology-based approach to estimate growing season length and harvest dates"
+    authors:
+      - family-names: "Gerstmann"
+        given-names: "Henning"
+    doi: "10.1016/j.compag.2016.07.032"
+    notes: "PHASE method paper implemented by this workflow."
+  - type: article
+    title: "Making domain-specific data quality information FAIR (Data Fitness for Purpose)"
+    authors:
+      - family-names: "Säurich"
+    doi: "10.1016/j.ecoinf.2026.103660"
+    notes: "Source defining the provisional spatial-uncertainty quality dimension."
+  - type: article
+    title: "Predicting into unknown space? Estimating the area of applicability of spatial prediction models"
+    authors:
+      - family-names: "Meyer"
+        given-names: "Hanna"
+      - family-names: "Pebesma"
+        given-names: "Edzer"
+    doi: "10.1111/2041-210X.13650"
+    notes: "Area-of-applicability expression principle."
