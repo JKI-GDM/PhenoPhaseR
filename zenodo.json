@@ -1,0 +1,101 @@
+{
+  "title": "PhenoPhaseR: Reproducible processing workflow for interpolating phenological DWD observations",
+  "version": "v1.9.1",
+  "publication_date": "2026-09-03",
+  "upload_type": "software",
+  "language": "eng",
+  "license": "MIT",
+  "description": "<p><strong>PhenoPhaseR</strong> is a reproducible R workflow for downloading, filtering, modelling, and spatially interpolating phenological observations provided by the German Weather Service (DWD). It implements the PHASE approach (Gerstmann et al. 2016), combining growing-degree-day models with geostatistical interpolation to produce area-wide phenological predictions across Germany at 1&nbsp;km spatial resolution, and publishes its outputs as FAIR Digital Objects (RO-Crate 1.2) with PROV-O provenance, DCAT/Dublin Core descriptors, and honestly anchored DQV data-quality metadata.</p><p><strong>v1.9.1 &mdash; registered-route measure concepts; propagated-uncertainty terms; <code>fairagrodq</code> 0.3.0.</strong> A patch release for the pipeline: the RO-Crates it emits are <strong>unchanged</strong>, because no PhenoPhaseR measurement uses the added terms. <code>tools/generate_fairagrodq_ttl.R</code> now emits every registry measure carrying a <code>fairagrodq:</code>-owned dimension as a <code>dqv:Metric</code>/<code>skos:Concept</code> node with <code>skos:definition</code>, <code>dqv:inDimension</code> and, where the measure's basis maps onto one, <code>fairagrodq:expressedBy</code>. This completes the registered route: the vocabulary previously published dimensions and expression principles but not the measures that use them, so a measure IRI emitted in a crate did not resolve. Three propagated-uncertainty measures (<code>u_pheno</code>, <code>u_precip</code>, <code>u_total</code>) are registered, each declaring <code>dct:isDefinedBy</code> WeatherIndicatoR (10.5281/zenodo.19631197), together with a <code>propagated</code> basis label rendered as &ldquo;analytical error propagation (model-asserted, unvalidated)&rdquo;. The generated vocabulary is now vendored as <code>fairagrodq.ttl</code> (v0.3.0) so its terms are readable without running R and drift is visible in a diff. The <code>https://w3id.org/fairagro/dq#</code> namespace now resolves; the terms remain project-defined and are still not part of ISO&nbsp;19157-1.</p><p><strong>v1.9.0 &mdash; honest validation basis for every accuracy metric.</strong> The emitted metadata no longer conflates hold-out, in-sample and deviance-explained results under a single label. Every measure in the registry records the regime that produced it (<code>basis</code>) and, where a number is optimistically biased, a <code>caveat</code>; both builders read their metric descriptions from that one source, so descriptions can no longer diverge across crates. New tokens <code>is_rmse</code>&nbsp;/ <code>is_mae</code>&nbsp;/ <code>is_cor</code> carry the in-sample <code>critical_doy_determination()</code> metrics honestly. No data files change &mdash; re-emit crate metadata against the unchanged data.</p><p><strong>v1.8.0 &mdash; honest anchoring of spatially explicit uncertainty.</strong> The spatial-uncertainty quality dimensions were migrated from <code>dffp:</code> to the <code>fairagrodq:</code> namespace and declare <code>dct:isDefinedBy</code> S&auml;urich et al. (2026) rather than asserting conformance to ISO&nbsp;19157-1, which contains no Spatial-Uncertainty element. An orthogonal expression-principle axis (<code>fairagrodq:UncertaintyExpressionPrinciple</code>, reached via <code>fairagrodq:expressedBy</code>) records how each uncertainty was produced and what it may claim, so a consumer can distinguish model-asserted from empirically-validated uncertainty. Already-published crates keep their original IRIs as historical record.</p>",
+  "creators": [
+    {
+      "name": "Möller, Markus",
+      "orcid": "0000-0002-1918-7747",
+      "affiliation": "Julius Kühn-Institut (JKI) – Federal Research Centre for Cultivated Plants"
+    },
+    {
+      "name": "Gerstmann, Henning",
+      "affiliation": "Federal Agency for Nature Conservation (BfN)"
+    }
+  ],
+  "keywords": [
+    "phenology",
+    "DWD",
+    "winter wheat",
+    "winter rye",
+    "winter barley",
+    "winter rapeseed",
+    "spring barley",
+    "oats",
+    "maize",
+    "growing degree days",
+    "kriging",
+    "Bayesian additive model",
+    "spatial interpolation",
+    "Cloud Optimized GeoTIFF",
+    "multi-band time series",
+    "RO-Crate",
+    "DCAT",
+    "DQV",
+    "PROV-O",
+    "SKOS",
+    "ISO 19157-1",
+    "AGROVOC",
+    "DFFP",
+    "FAIR",
+    "FAIR4RS",
+    "Germany",
+    "reproducible research"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isDerivedFrom",
+      "identifier": "10.5281/zenodo.18594963",
+      "resource_type": "dataset"
+    },
+    {
+      "relation": "isDescribedBy",
+      "identifier": "10.1016/j.compag.2016.07.032",
+      "resource_type": "publication-article"
+    },
+    {
+      "relation": "isSourceOf",
+      "identifier": "10.5281/zenodo.19571847",
+      "resource_type": "dataset"
+    },
+    {
+      "relation": "isSourceOf",
+      "identifier": "10.5281/zenodo.19483111",
+      "resource_type": "dataset"
+    },
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/JKI-GDM/PhenoPhaseR/tree/v1.9.1",
+      "resource_type": "software"
+    },
+    {
+      "relation": "references",
+      "identifier": "10.1016/j.ecoinf.2026.103660",
+      "resource_type": "publication-article"
+    },
+    {
+      "relation": "references",
+      "identifier": "10.1111/2041-210X.13650",
+      "resource_type": "publication-article"
+    },
+    {
+      "relation": "references",
+      "identifier": "10.5281/zenodo.19631197",
+      "resource_type": "software"
+    }
+  ],
+  "grants": [
+    {
+      "id": "501100001659::501899475"
+    }
+  ],
+  "communities": [
+    {
+      "identifier": "jki"
+    }
+  ]
+}

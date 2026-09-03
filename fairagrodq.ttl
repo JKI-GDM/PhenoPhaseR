@@ -1,0 +1,214 @@
+# fairagrodq vocabulary -- GENERATED FILE, do not hand-edit.
+# Source of truth: dq_vocab_core.R + dq_uncertainty_principles.R
+# Regenerate with: Rscript generate_fairagrodq_ttl.R
+
+@prefix fairagrodq: <https://w3id.org/fairagro/dq#> .
+@prefix dqv:        <http://www.w3.org/ns/dqv#> .
+@prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:        <http://purl.org/dc/terms/> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix vann:       <http://purl.org/vocab/vann/> .
+
+#############################################################################
+#  Vocabulary description
+#############################################################################
+<https://w3id.org/fairagro/dq>
+    a owl:Ontology ;
+    dct:title "FAIRagro data-quality vocabulary for spatially explicit uncertainty (fairagrodq)" ;
+    dct:description "A provisional, project-defined vocabulary that extends the W3C Data Quality Vocabulary (DQV) for spatially explicit uncertainty in modelling and classification products, for which ISO 19157-1:2023 provides no quality element. It supplies spatial-uncertainty quality dimensions (which aspect of quality is meant) and an orthogonal SKOS scheme of uncertainty expression principles (how an uncertainty was produced and what it may claim). Genuine ISO 19157-1 elements are referenced from their own namespace and are NOT redefined here; no term asserts conformance to a standard that does not contain it." ;
+    dct:creator <https://orcid.org/0000-0002-1918-7747> ;
+    dct:publisher "FAIRagro / Julius Kuehn-Institut (JKI)" ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dct:source <https://doi.org/10.1016/j.ecoinf.2026.103660> ;
+    dct:modified "2026-08-20"^^xsd:date ;
+    owl:versionInfo "0.3.0" ;
+    vann:preferredNamespaceUri "https://w3id.org/fairagro/dq#" ;
+    vann:preferredNamespacePrefix "fairagrodq" ;
+    rdfs:comment "PROVISIONAL. The https://w3id.org/fairagro/dq namespace is not yet registered as a resolvable w3id redirect; this document is the authoritative definition pending that registration. Term IRIs are stable and are intended to be carried unchanged into the registered namespace." .
+
+#############################################################################
+#  Quality dimensions (extend dqv:Dimension; ISO 19157-1 elements stay external)
+#############################################################################
+fairagrodq:SpatialUncertainty
+    a dqv:Dimension, skos:Concept ;
+    skos:prefLabel "Spatial uncertainty" ;
+    skos:definition "Project-defined, PROVISIONAL data-quality dimension for a spatially explicit account of uncertainty in modelling / classification products. Informed by Saeurich et al. (2026); NOT part of ISO 19157-1:2023. To be governed under a registered FAIRagro namespace." ;
+    skos:note "Provisional, project-defined; pending namespace registration." ;
+    dct:isDefinedBy <https://doi.org/10.1016/j.ecoinf.2026.103660> .
+
+fairagrodq:NumericalSpatialUncertainty
+    a dqv:Dimension, skos:Concept ;
+    skos:prefLabel "Numerical spatial uncertainty" ;
+    skos:definition "Project-defined, provisional. Spatially explicit uncertainty of a continuous (numerical) modelled attribute: e.g. per-pixel posterior standard error and its prediction-interval calibration (PICP, MPIW). Informed by Saeurich et al. (2026); NOT part of ISO 19157-1:2023." ;
+    skos:broader fairagrodq:SpatialUncertainty ;
+    dct:isDefinedBy <https://doi.org/10.1016/j.ecoinf.2026.103660> .
+
+fairagrodq:ClassSpatialUncertainty
+    a dqv:Dimension, skos:Concept ;
+    skos:prefLabel "Class spatial uncertainty" ;
+    skos:definition "Project-defined, provisional. Spatially explicit uncertainty of a categorical (class) modelled attribute, e.g. a per-pixel Area-of-Applicability / extrapolation mask. Informed by Saeurich et al. (2026); NOT part of ISO 19157-1:2023." ;
+    skos:broader fairagrodq:SpatialUncertainty ;
+    dct:isDefinedBy <https://doi.org/10.1016/j.ecoinf.2026.103660> .
+
+#############################################################################
+#  Expression principles: scheme, owned predicates, eight concepts
+#############################################################################
+fairagrodq:UncertaintyExpressionPrinciple
+    a skos:ConceptScheme ;
+    skos:prefLabel "Spatial-uncertainty expression principles" ;
+    skos:definition "Owned, PROVISIONAL scheme distinguishing the principles by which spatially explicit uncertainty of a modelling / classification product can be expressed and what each is allowed to claim. Orthogonal to the DQV quality dimension. Pending FAIRagro/w3id registration." ;
+    skos:note "Provisional, project-defined; pending namespace registration." ;
+    dct:isDefinedBy <https://doi.org/10.1016/j.ecoinf.2026.103660> .
+
+fairagrodq:expressedBy
+    a rdf:Property ;
+    rdfs:label "expressed by (uncertainty principle)" ;
+    rdfs:comment "Links a quality metric or an uncertainty layer to the principle by which its spatial uncertainty is expressed. Provisional, owned." .
+
+fairagrodq:representation
+    a rdf:Property ;
+    rdfs:label "uncertainty representation" ;
+    rdfs:comment "How an uncertainty is stored (per-pixel-sigma, quantile-raster, ensemble-realizations, dissimilarity-index-raster, binary-applicability-mask, class-probability-raster, scalar-diagnostic). Provisional, owned." .
+
+fairagrodq:claimStatus
+    a rdf:Property ;
+    rdfs:label "uncertainty claim status" ;
+    rdfs:comment "What the uncertainty is allowed to claim (model-asserted, distribution-free-estimate, guaranteed-marginal-coverage, empirically-validated, trust-signal, classification-ambiguity). Provisional, owned." .
+
+fairagrodq:assumes
+    a rdf:Property ;
+    rdfs:label "uncertainty assumption" ;
+    rdfs:comment "The assumption the claim rests on. Provisional, owned." .
+
+fairagrodq:ParametricModelUncertainty
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Parametric model uncertainty" ;
+    skos:definition "Per-pixel uncertainty taken from the fitted model's own posterior/sampling variance (e.g. basis-spline standard error of a BAM/GAM posterior, kriging variance, Gaussian-process posterior variance). A model-internal spread; it does NOT by itself assert validated coverage." ;
+    fairagrodq:representation "per-pixel-sigma" ;
+    fairagrodq:claimStatus "model-asserted" ;
+    fairagrodq:assumes "model-correctness" .
+
+fairagrodq:AnalyticalErrorPropagation
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Analytical error propagation" ;
+    skos:definition "Per-pixel uncertainty propagated analytically (Taylor / quadrature) from the uncertainties of the inputs, e.g. combining a phenology standard error and a precipitation standard error in quadrature." ;
+    fairagrodq:representation "per-pixel-sigma" ;
+    fairagrodq:claimStatus "propagated-model-asserted" ;
+    fairagrodq:assumes "linearization-and-known-input-variances" .
+
+fairagrodq:QuantileRegressionInterval
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Quantile-regression prediction interval" ;
+    skos:definition "Predictive quantiles estimated directly (e.g. quantile regression forest, quantile GAM), giving per-pixel interval bounds/width without assuming a Gaussian error law." ;
+    fairagrodq:representation "quantile-raster" ;
+    fairagrodq:claimStatus "distribution-free-estimate" ;
+    fairagrodq:assumes "covariate-space-representativeness" ;
+    skos:scopeNote "Meinshausen (2006), Quantile Regression Forests, J. Mach. Learn. Res. 7:983-999." .
+
+fairagrodq:ConformalPredictionInterval
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Conformal prediction interval" ;
+    skos:definition "Intervals with a finite-sample marginal coverage guarantee under exchangeability (split/inductive conformal). Coverage holds by construction, marginally over the calibration distribution." ;
+    fairagrodq:representation "quantile-raster" ;
+    fairagrodq:claimStatus "guaranteed-marginal-coverage" ;
+    fairagrodq:assumes "exchangeability" ;
+    skos:scopeNote "Vovk, Gammerman & Shafer (2005); Lei et al. (2018), JASA 113:1094-1111." .
+
+fairagrodq:EnsembleSimulationSpread
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Ensemble / simulation spread" ;
+    skos:definition "Uncertainty as the spread across an ensemble of equiprobable realizations (geostatistical conditional simulation, bootstrap, Monte Carlo). Represented by the realizations or their per-pixel spread, not a single sigma." ;
+    fairagrodq:representation "ensemble-realizations" ;
+    fairagrodq:claimStatus "model-asserted" ;
+    fairagrodq:assumes "variogram-correctness" ;
+    skos:scopeNote "Goovaerts (1997), Geostatistics for Natural Resources Evaluation." .
+
+fairagrodq:EmpiricalCoverageCalibration
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Empirical coverage calibration" ;
+    skos:definition "A held-out check of whether stated prediction intervals actually cover the truth at the nominal rate: prediction-interval coverage probability (PICP) and mean interval width (MPIW). Characterises intervals produced by ANY principle above; the only one of these that is empirically validated rather than asserted." ;
+    fairagrodq:representation "scalar-diagnostic" ;
+    fairagrodq:claimStatus "empirically-validated" ;
+    fairagrodq:assumes "representative-holdout" .
+
+fairagrodq:ApplicabilityDomain
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Applicability domain" ;
+    skos:definition "A spatially explicit trust signal based on dissimilarity of each prediction location to the training data in (weighted) covariate space -- the dissimilarity index (DI) and its binary Area of Applicability (AOA). Flags extrapolation; it is a reliability/extrapolation signal, NOT a magnitude of error." ;
+    fairagrodq:representation "dissimilarity-index-raster" ;
+    fairagrodq:claimStatus "trust-signal" ;
+    fairagrodq:assumes "covariate-space-representativeness" ;
+    skos:scopeNote "Meyer & Pebesma (2021), Methods Ecol. Evol. 12:1620-1633." ;
+    rdfs:seeAlso <https://doi.org/10.1111/2041-210X.13650> .
+
+fairagrodq:FuzzyClassMembership
+    a skos:Concept ;
+    skos:inScheme fairagrodq:UncertaintyExpressionPrinciple ;
+    skos:prefLabel "Fuzzy class membership" ;
+    skos:definition "For categorical products: per-pixel class-membership probabilities and their summaries (confusion index, Shannon entropy of the class-probability vector). Expresses classification ambiguity." ;
+    fairagrodq:representation "class-probability-raster" ;
+    fairagrodq:claimStatus "classification-ambiguity" ;
+    fairagrodq:assumes "none-distribution-free" .
+
+#############################################################################
+#  Owned measure concepts (dqv:Metric)
+#############################################################################
+
+fairagrodq:u_pheno
+    a dqv:Metric, skos:Concept ;
+    skos:prefLabel "u_pheno" ;
+    skos:definition "1-sigma uncertainty contribution of phenological-window placement, computed as (WI_max - WI_min)/2 from windows shifted by the propagated phase-entry BSE." ;
+    dqv:inDimension fairagrodq:NumericalSpatialUncertainty ;
+    fairagrodq:expressedBy fairagrodq:AnalyticalErrorPropagation ;
+    skos:note "Unit: mm." ;
+    dct:isDefinedBy <https://doi.org/10.5281/zenodo.19631197> .
+
+fairagrodq:u_precip
+    a dqv:Metric, skos:Concept ;
+    skos:prefLabel "u_precip" ;
+    skos:definition "1-sigma uncertainty contribution of precipitation: square root of the summed daily E-OBS ensemble variance over the phenological window." ;
+    dqv:inDimension fairagrodq:NumericalSpatialUncertainty ;
+    fairagrodq:expressedBy fairagrodq:AnalyticalErrorPropagation ;
+    skos:note "Unit: mm." ;
+    dct:isDefinedBy <https://doi.org/10.5281/zenodo.19631197> .
+
+fairagrodq:u_total
+    a dqv:Metric, skos:Concept ;
+    skos:prefLabel "u_total" ;
+    skos:definition "Total 1-sigma uncertainty of the weather index: quadrature combination sqrt(u_pheno^2 + u_precip^2) of the phenological and precipitation contributions." ;
+    dqv:inDimension fairagrodq:NumericalSpatialUncertainty ;
+    fairagrodq:expressedBy fairagrodq:AnalyticalErrorPropagation ;
+    skos:note "Unit: mm." ;
+    dct:isDefinedBy <https://doi.org/10.5281/zenodo.19631197> .
+
+fairagrodq:picp
+    a dqv:Metric, skos:Concept ;
+    skos:prefLabel "picp" ;
+    skos:definition "Prediction-interval coverage probability: pooled out-of-fold share of observations falling inside the nominal interval, from a dedicated k-fold cross-validation of the BSE calibration (the production model is fit on all observations, so coverage cannot be measured in-sample)." ;
+    dqv:inDimension fairagrodq:NumericalSpatialUncertainty ;
+    fairagrodq:expressedBy fairagrodq:EmpiricalCoverageCalibration .
+
+fairagrodq:mpiw
+    a dqv:Metric, skos:Concept ;
+    skos:prefLabel "mpiw" ;
+    skos:definition "Mean prediction-interval width at nominal coverage (model output)." ;
+    dqv:inDimension fairagrodq:NumericalSpatialUncertainty ;
+    skos:note "Unit: days." .
+
+fairagrodq:mean_bse
+    a dqv:Metric, skos:Concept ;
+    skos:prefLabel "mean_bse" ;
+    skos:definition "Spatial mean of the per-pixel basis-spline posterior standard-error raster (model output)." ;
+    dqv:inDimension fairagrodq:NumericalSpatialUncertainty ;
+    skos:note "Unit: days." .
+
